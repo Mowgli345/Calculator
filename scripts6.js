@@ -19,6 +19,9 @@ const opKey = document.getElementsByClassName("opBtn");
 const equalsKey = document.getElementById("btn-equal");
 
 
+
+
+
 Array.from(numKeys).forEach(button =>
         button.addEventListener("click",(e)=>{
             input=button.innerHTML;
@@ -34,44 +37,33 @@ Array.from(opKey).forEach(button=> {
         });
     });
 
+//Run sum
+equalsKey.addEventListener("click",(e)=>{
+    //debugger;
+        calculate();
+        num2="";
 
-function getOperator (operator) {   
+} )
+
+function getOperator () {   
     tempNum="";
     debugger;
-    if (num1 === undefined) {
+    if (num1 === undefined) {  //This runs on the firsdt equation: 12+7=
         console.log("getOperator 1");
-        num1 = displayNum;
+        num1 =parseFloat(displayNum);
         displayNum = "";
         op2 = operator;
         return;
     }
-
-    else if (num2 !== undefined) {
+    else if (num2 === undefined) {    //This runs on the second equation: 12+7-
         console.log("getOperator 2");
-        //debugger;
-        num2=displayNum = "";
-
-        // if (op2=="+"){
-        //     add(num1,num2);
-        // }
-        // else if (op2=="-"){
-        //     subtract(num1,num2);
-        // }
-        // else if (op2=="x"){
-        //     multiply(num1,num2);
-        // }
-        // else {
-        //     divide(num1,num2);
-        // }
-        
-        return;
-    }
-
-    else {   
-        console.log("getOperator 3");
         num2 = displayNum;
         displayNum = "";
-
+    }
+    else {
+        console.log("getOperator 3"); //This runs on equals??
+        num2 = displayNum;  
+      }
         if (op2=="+"){
             add(num1,num2);
         }
@@ -83,73 +75,67 @@ function getOperator (operator) {
         }
         else {
             divide(num1,num2);
-        }   }
+        }
+
         console.log("getOperator End Section");
-    num1 = displayNum;
     displayNum ="";
     op2 = operator;
     return num1;
 }
 
-//Run sum
-equalsKey.addEventListener("click",(e)=>{
-        calculate(num1,operator);
-        num1=tot;
-        n2=tot="";
-} 
-)
-
-function calculate (num1, operator) {
+function calculate () {
     console.log(`num2 = ${num2}`);
-    debugger;
-    if (num2 === undefined) {
+    if (num2 === undefined) {  //This runs on the firsdt equation: 12+7=
         console.log("Calculate 1");
     num2=parseFloat(displayNum);
     displayNum = "";  
     }
-    else { 
+
+    else if (num2 !== undefined){    //Runs for second equ. 12+7-...
         console.log("Calculate 2");
         // num1 = tot; - Messes up for the last calc
         num2 = tempNum;
     }
+
     if (operator=="+"){
-        add(num1,num2);
+        add();
     }
     else if (operator=="-"){
-        subtract(num1,num2);
+        subtract();
     }
     else if (operator=="x"){
-        multiply(num1,num2);
+        multiply();
     }
     else {
-        divide(num1,num2);
+        divide();
     }
     //num1 = tot;
     return num1;
+ 
 }
 
-function add (num1, num2) {
-    //debugger;
-    tot = parseInt(num1) + parseInt(num2);
+function add () {
+    debugger;
+    tot = parseFloat(num1) + parseFloat(num2);
     myDisplay.innerHTML=tot;
     displayNum = tot;
     num1=tot;
 }
 
-function subtract (num1, num2) {
-    tot = parseInt(num1) - parseInt(num2);
+function subtract () {
+    tot = parseFloat(num1) - parseFloat(num2);
     myDisplay.innerHTML=tot;
     displayNum = tot;
     num1=tot;
 }
-function multiply (num1, num2) {
-    tot = parseInt(num1) * parseInt(num2);
+function multiply () {
+    tot = parseFloat(num1) * parseFloat(num2);
     myDisplay.innerHTML=tot;
     displayNum = tot;
     num1=tot;
 }
-function divide (num1, num2) {
-    tot = parseInt(num1) / parseInt(num2);
+function divide () {
+    tot = parseFloat(num1) / parseFloat(num2);
     myDisplay.innerHTML=tot;
     displayNum = tot;
     num1=tot;
@@ -157,6 +143,7 @@ function divide (num1, num2) {
 
 const clearKey = document.getElementById("clear");
 clearKey.addEventListener("click",(e)=>{
+    debugger;
     myDisplay.innerHTML="0";
     displayNum="";
     num1=num2=tot = 0;

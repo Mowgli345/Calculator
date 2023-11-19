@@ -58,6 +58,7 @@ function getOperator (operator, currentNum) {
     currentNum="";    
     // console.log("function getOperator. num1 = "+num1+". Operator = "+operator);
     console.log(`function getOperator. Operator = ${operator}. CurrentNum= ${currentNum}`);
+    return operator;
 }
 
 
@@ -65,6 +66,8 @@ function getOperator (operator, currentNum) {
 
 //Run sum
 equalsKey.addEventListener("click",(e)=>{
+    console.log("Equals");
+    debugger;
     calculate();
 })
 
@@ -90,7 +93,7 @@ function getNum2 (currentNum) {
 function calculate (num1, num2, operator) {
     if (operator=="+"){
         console.log("Total = "+num1+num2);
-        //add(num1,num2);
+        add(num1,num2);
     }
     else if (operator=="-"){
         subtract(num1,num2);
