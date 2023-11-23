@@ -1,9 +1,19 @@
-//Will allow sums with equals: 1+2=3+4=7+5=12...
+
+// Crate variable for myDisplay.innerHTML
+
+//Limit 1 x decimal Eg. 1.23.45
+
+
+//Dispaly higher numbers
 
 //Variables
-let  num1, num2, operator, op2, tot, input, tempNum="", displayNum="";
+let  num1, num2, operator, op2, tot, input, tempNum="", displayNum="", dispTotal="";
+
 let myDisplay = document.getElementById("display");
 myDisplay.innerHTML="0";
+
+let dispDigits = 8;
+
 const addKey = document.getElementById("btn-add");
 const allButtons = document.getElementsByClassName("calcBtn");
 const numKeys = document.getElementsByClassName("numBtn");
@@ -11,29 +21,12 @@ const opKey = document.getElementsByClassName("opBtn");
 const equalsKey = document.getElementById("btn-equal");
 const posneg = document.getElementById("btn-neg");
 
-const myDelete = document.getElementById("btn-del");
-myDelete.addEventListener("click",(e)=>{
-    //debugger;
-    input="";
-    let x = displayNum.length-1;
-    displayNum= displayNum.slice(0,x);
-    myDisplay.innerHTML=displayNum;
-});
-
-console.log(posneg);
-
-posneg.addEventListener("click",(e)=>{
-    debugger;
-    displayNum*=-1;
-    myDisplay.innerHTML=displayNum;
-
-});
 
 Array.from(numKeys).forEach(button =>
         button.addEventListener("click",(e)=>{
             input=button.innerHTML;
             tempNum=tempNum+input;
-            displayNum=tempNum.substring(0,8);
+            displayNum=tempNum.substring(0,dispDigits);
             myDisplay.innerHTML=displayNum;
         }));
 
@@ -44,34 +37,27 @@ Array.from(opKey).forEach(button=> {
         });
     });
 
+
 //Run sum
 equalsKey.addEventListener("click",(e)=>{
-    //debugger;
-        calculate();
-        num2=0;
-
+    calculate();
+    num2=0;
 } )
 
 function getOperator () {   
-    debugger;
     tempNum="";
-    if (num1 === undefined) {  //First equation: 2+
-        console.log("getOperator 1");
+    if (num1 === undefined) {  
         num1 =parseFloat(displayNum);
         displayNum = "";
         op2 = operator;
         return;
     }
-
     else if (num2==0) {
-        console.log("getOperator 2 - just exits"); 
         num2=100;
         op2=operator;
         return;
     }
-
-    else if (num2 === undefined) {       //Second equation: 2+3+ . Runs add and End
-        console.log("getOperator 3");
+    else if (num2 === undefined) {       
         if (displayNum==="") {
             myDisplay.innerHTML="Error";
             return;
@@ -79,9 +65,7 @@ function getOperator () {
         num2 = displayNum;
         displayNum = "";
     }
-
-    else { //n2 != undefined
-        console.log("getOperator 4");    //Third equation: 2+3+4+  ALSO on after equals: 2+3+4=(5) +  - this runs SUM which we don't want. 
+    else { 
         num2 = displayNum;  
       }
         if (op2=="+"){
@@ -96,8 +80,6 @@ function getOperator () {
         else {
             divide(num1,num2);
         }
-
-        console.log("getOperator End Section");
     displayNum ="";
     op2 = operator;
     return num1;
@@ -105,15 +87,11 @@ function getOperator () {
 
 function calculate () {
     debugger;
-    console.log(`num2 = ${num2}`);
     if (num2 === undefined) {  
-        console.log("Calculate 1");
-    num2=parseFloat(displayNum);
-    displayNum = "";  
-    }
-
-    else if (num2 !== undefined){    //Runs on multiples: 2+3+4+5=  ... includes end = num2=0
-        console.log("Calculate 2");
+        num2=parseFloat(displayNum);
+        displayNum = "";  
+        }
+    else if (num2 !== undefined){   
         num2 = tempNum;
     }
 
@@ -129,28 +107,35 @@ function calculate () {
     else {
         divide();
     }
+
+    if (tot % 1 != 0) {
+        let decIndex = tot.toString().indexOf(".");
+        let myDecimal = dispDigits-decIndex-1;
+        if (myDecimal>0) {
+            dispTotal=tot.toFixed(myDecimal);
+        }
+        else {
+            dispTotal = Math.round(tot);
+        }
+    }
+     else if(tot>99999) {
+        dispTotal= tot.toExponential(3);
+     }
+
+    myDisplay.innerHTML=dispTotal;
+    displayNum = dispTotal;
+    num1=tot;
     return num1; 
 }
 
 function add () {
-    debugger;
     tot = parseFloat(num1) + parseFloat(num2);
-    myDisplay.innerHTML=tot;
-    displayNum = tot;
-    num1=tot;
 }
-
 function subtract () {
     tot = parseFloat(num1) - parseFloat(num2);
-    myDisplay.innerHTML=tot;
-    displayNum = tot;
-    num1=tot;
 }
 function multiply () {
     tot = parseFloat(num1) * parseFloat(num2);
-    myDisplay.innerHTML=tot;
-    displayNum = tot;
-    num1=tot;
 }
 function divide () {
     if (num2 == 0) {
@@ -158,16 +143,70 @@ function divide () {
         return;
     }
     tot = parseFloat(num1) / parseFloat(num2);
-    myDisplay.innerHTML=tot;
-    displayNum = tot;
-    num1=tot;
 }
 
+
+// Clear key
 const clearKey = document.getElementById("clear");
 clearKey.addEventListener("click",(e)=>{
-    debugger;
     myDisplay.innerHTML="0";
     displayNum="";
     num1=num2=tot = 0;
     input = tempNum = op2 = operator = "";
 });
+
+//Keystrokes
+document.addEventListener('keydown', (e) => {
+    let key = e.key;
+    let regeX = /[0-9.]/;
+    if (key.match(regeX)) {
+        input = key;
+        tempNum=tempNum+input;
+        displayNum=tempNum.substring(0,8);
+        myDisplay.innerHTML=displayNum;
+        }
+    else if (e.shiftKey && (key=="+" || key=="*")) {
+        operator = key;
+        getOperator(operator,displayNum);
+      }
+    else if (key == "-" || key == "/") {
+        operator = key;
+        getOperator(operator,displayNum);
+    }
+    else if (e.shiftKey && key=="=") {
+        calculate();
+        num2=0;
+      }    
+});
+
+// +/- key 
+posneg.addEventListener("click",(e)=>{
+    displayNum*=-1;
+    myDisplay.innerHTML=displayNum;
+});
+    
+// Delete button
+const myDelete = document.getElementById("btn-del");
+myDelete.addEventListener("click",(e)=>{
+    input="";
+    let x = displayNum.length-1;
+    displayNum= displayNum.slice(0,x);
+    myDisplay.innerHTML=displayNum;
+});
+
+// function multiply () {
+//     tot = parseFloat(num1) * parseFloat(num2);
+//     if (tot % 1 != 0) {
+//         let decIndex = tot.toString().indexOf(".");
+//         let myDecimal = dispDigits-decIndex-1;
+//         if (myDecimal>0) {
+//             tot=tot.toFixed(myDecimal);
+//         }
+//         else {
+//             tot = Math.round(tot);
+//         }
+//     }
+//      else if(tot>99999) {
+//         tot= tot.toExponential(3);
+//      }
+// }
