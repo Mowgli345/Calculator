@@ -21,14 +21,18 @@ const opKey = document.getElementsByClassName("opBtn");
 const equalsKey = document.getElementById("btn-equal");
 const posneg = document.getElementById("btn-neg");
 
-
 Array.from(numKeys).forEach(button =>
-        button.addEventListener("click",(e)=>{
-            input=button.innerHTML;
-            tempNum=tempNum+input;
-            displayNum=tempNum.substring(0,dispDigits);
-            myDisplay.innerHTML=displayNum;
-        }));
+    button.addEventListener("click",(e)=>{
+        input=button.innerHTML;
+//Prevent multiple decimals
+        if (input == "." && tempNum%1!=0) {
+            input="";
+        }
+        tempNum=tempNum+input;
+        displayNum=tempNum.substring(0,dispDigits);
+        myDisplay.innerHTML=displayNum;
+    }));
+
 
 Array.from(opKey).forEach(button=> {
     button.addEventListener("click",(e)=>{
@@ -36,7 +40,6 @@ Array.from(opKey).forEach(button=> {
         getOperator(operator,displayNum);
         });
     });
-
 
 //Run sum
 equalsKey.addEventListener("click",(e)=>{
@@ -86,7 +89,6 @@ function getOperator () {
 }
 
 function calculate () {
-    debugger;
     if (num2 === undefined) {  
         num2=parseFloat(displayNum);
         displayNum = "";  
@@ -145,7 +147,6 @@ function divide () {
     tot = parseFloat(num1) / parseFloat(num2);
 }
 
-
 // Clear key
 const clearKey = document.getElementById("clear");
 clearKey.addEventListener("click",(e)=>{
@@ -193,20 +194,3 @@ myDelete.addEventListener("click",(e)=>{
     displayNum= displayNum.slice(0,x);
     myDisplay.innerHTML=displayNum;
 });
-
-// function multiply () {
-//     tot = parseFloat(num1) * parseFloat(num2);
-//     if (tot % 1 != 0) {
-//         let decIndex = tot.toString().indexOf(".");
-//         let myDecimal = dispDigits-decIndex-1;
-//         if (myDecimal>0) {
-//             tot=tot.toFixed(myDecimal);
-//         }
-//         else {
-//             tot = Math.round(tot);
-//         }
-//     }
-//      else if(tot>99999) {
-//         tot= tot.toExponential(3);
-//      }
-// }
