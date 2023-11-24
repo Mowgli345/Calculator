@@ -1,4 +1,4 @@
-//DECIMALS ADD BRNCH!!
+
 // Crate variable for myDisplay.innerHTML
 
 //Limit 1 x decimal Eg. 1.23.45
