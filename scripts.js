@@ -1,101 +1,211 @@
-let num1, num2, operator, tot, input, currentNum="";
+let  num1, num2, operator, op2, tot, input, tempNum="", displayNum="", dispTotal="";
 
 let myDisplay = document.getElementById("display");
 myDisplay.innerHTML="0";
 
-function add (num1, num2) {
-    console.log(`${num1} plus ${num2} = `)
-    tot = parseInt(num1) + parseInt(num2);
-    console.log(tot);
-    myDisplay.innerHTML=tot;
-
-    return parseInt(num1) + parseInt(num2);
-}
-
-//This works so far. Master copy
-// function add (num1, num2) {
-//     console.log(`${num1} plus ${num2} = `)
-//     tot = parseInt(num1) + parseInt(num2);
-//     console.log(tot);
-//     myDisplay.innerHTML=tot;
-
-//     return parseInt(num1) + parseInt(num2);
-// }
-
-function subtract (num1, num2) {
-    console.log(`${num1} take ${num2} = `)
-    console.log(parseInt(num1) - parseInt(num2));
-
-    return parseInt(num1) - parseInt(num2);
-}
-
-
-function multiply (num1, num2) {
-    console.log(`${num1} times ${num2} = `)
-    console.log(parseInt(num1) * parseInt(num2));
-
-    return parseInt(num1) * parseInt(num2);
-}
-
-function divide (num1, num2) {
-    console.log(`${num1} divided by ${num2} = `)
-    console.log(parseInt(num1) / parseInt(num2));
-
-    return parseInt(num1) / parseInt(num2);
-}
-
-function operate (num1, num2) {
-    num1 = prompt("Enter number 1");
-    myDisplay.innerHTML=num1;
-    operator = prompt("Enter operation");
-    num2 = prompt("Enter number 2");
-    myDisplay.innerHTML=num2;
-
-
-    num1 = prompt("Enter first number");
-    myDisplay.innerHTML=num1;
-    operator = prompt("Enter operation");
-    num2 = prompt("Enter 2nd number");
-    myDisplay.innerHTML=num2;
-
-
-
-    if (operator=="+"){
-        add(num1,num2);
-    }
-    else if (operator=="-"){
-        subtract(num1,num2);
-    }
-    else if (operator=="*"){
-        multiply(num1,num2);
-    }
-    else if (operator=="/"){
-        divide(num1,num2);
-    }
-    else {
-        return -1;
-    }
-}
-
-// operate();
-
-
-//NEXT - Step 5. Event Listeners on numBtn
-
-const numKeys = document.getElementsByClassName("numBtn");
-Array.from(numKeys).forEach(button=> {
-    button.addEventListener("click",(e)=>{
-        input=button.innerHTML;
-        currentNum=currentNum+input;
-        myDisplay.innerHTML=currentNum;
-   });
-   console.log(`currentNum = ${currentNum}`);
-});
+let dispDigits = 8;
 
 const addKey = document.getElementById("btn-add");
-console.log(addKey);
+const allButtons = document.getElementsByClassName("calcBtn");
+const numKeys = document.getElementsByClassName("numBtn");
+const opKey = document.getElementsByClassName("opBtn");
+const equalsKey = document.getElementById("btn-equal");
+const posneg = document.getElementById("btn-neg");
 
+Array.from(numKeys).forEach(button =>
+    button.addEventListener("click",(e)=>{
+        input=button.innerHTML;
+//Prevent multiple decimals
+        if (input == "." && tempNum%1!=0) {
+            input="";
+        }
+        tempNum=tempNum+input;
+        displayNum=tempNum.substring(0,dispDigits);
+        myDisplay.innerHTML=displayNum;
+    }));
+
+Array.from(opKey).forEach(button=> {
+    button.addEventListener("click",(e)=>{
+        operator = button.innerHTML;
+        getOperator(operator,displayNum);
+        });
+    });
+
+//Run sum
+equalsKey.addEventListener("click",(e)=>{
+    calculate();
+    num2=0;
+} )
+
+function getOperator () {   
+    tempNum="";
+    if (num1 === undefined) {  
+        num1 =parseFloat(displayNum);
+        displayNum = "";
+        op2 = operator;
+        return;
+    }
+    else if (num2==0) {
+        num2=100;
+        op2=operator;
+        return;
+    }
+    else if (num2 === undefined) {       
+        if (displayNum==="") {
+            myDisplay.innerHTML="Error";
+            return;
+        }
+    }
+    else { 
+        num2 = displayNum;  
+      }
+      num2 = displayNum;
+      displayNum = "";
+
+        if (op2=="+"){
+            add();
+        }
+        else if (op2=="-"){
+            subtract();
+        }
+        else if (op2=="x"){
+            multiply();
+        }
+        else {
+            divide();
+        }
+//JUST PASTED THIS FROM CALC
+        if (tot % 1 != 0) {
+            let decIndex = tot.toString().indexOf(".");
+            let myDecimal = dispDigits-decIndex-1;
+            if (myDecimal>0) {
+                dispTotal=tot.toFixed(myDecimal);
+            }
+            else {
+                dispTotal = Math.round(tot);
+            }
+        }
+         else if(tot>99999) {
+            dispTotal= tot.toExponential(3);
+         }
+         else {
+            dispTotal=tot;
+         }
+
+    displayNum ="";
+    op2 = operator;
+    myDisplay.innerHTML=dispTotal;
+    num1=tot;
+    return num1;
+}
+
+function calculate () {
+    if (num2 === undefined) {  
+        num2=parseFloat(displayNum);
+        displayNum = "";  
+        }
+    else if (num2 !== undefined){   
+        num2 = tempNum;
+    }
+
+    if (operator=="+"){
+        add();
+    }
+    else if (operator=="-"){
+        subtract();
+    }
+    else if (operator=="x"){
+        multiply();
+    }
+    else {
+        divide();
+    }
+
+    if (tot % 1 != 0) {
+        let decIndex = tot.toString().indexOf(".");
+        let myDecimal = dispDigits-decIndex-1;
+        if (myDecimal>0) {
+            dispTotal=tot.toFixed(myDecimal);
+        }
+        else {
+            dispTotal = Math.round(tot);
+        }
+    }
+     else if(tot>99999) {
+        dispTotal= tot.toExponential(3);
+     }
+     else {
+        dispTotal=tot;
+     }
+
+     myDisplay.innerHTML=dispTotal;
+     displayNum = dispTotal;
+     num1=tot;
+
+    return num1; 
+}
+
+function add () {
+    tot = parseFloat(num1) + parseFloat(num2);
+}
+function subtract () {
+    tot = parseFloat(num1) - parseFloat(num2);
+}
+function multiply () {
+    tot = parseFloat(num1) * parseFloat(num2);
+}
+function divide () {
+    if (num2 == 0) {
+        myDisplay.innerHTML="Zero Error";
+        return;
+    }
+    tot = parseFloat(num1) / parseFloat(num2);
+}
+
+// Clear key
 const clearKey = document.getElementById("clear");
-clearKey.addEventListener("click",(e)=>
-    myDisplay.innerHTML="0"
-);
+clearKey.addEventListener("click",(e)=>{
+    myDisplay.innerHTML="0";
+    displayNum="";
+    num1=num2=tot = 0;
+    input = tempNum = op2 = operator = "";
+});
+
+//Keystrokes
+document.addEventListener('keydown', (e) => {
+    let key = e.key;
+    let regeX = /[0-9.]/;
+    if (key.match(regeX)) {
+        input = key;
+        tempNum=tempNum+input;
+        displayNum=tempNum.substring(0,8);
+        myDisplay.innerHTML=displayNum;
+        }
+    else if (e.shiftKey && (key=="+" || key=="*")) {
+        operator = key;
+        getOperator(operator,displayNum);
+      }
+    else if (key == "-" || key == "/") {
+        operator = key;
+        getOperator(operator,displayNum);
+    }
+    else if (e.shiftKey && key=="=") {
+        calculate();
+        num2=0;
+      }    
+});
+
+// +/- key 
+posneg.addEventListener("click",(e)=>{
+    displayNum*=-1;
+    myDisplay.innerHTML=displayNum;
+});
+    
+// Delete button
+const myDelete = document.getElementById("btn-del");
+myDelete.addEventListener("click",(e)=>{
+    input="";
+    let x = displayNum.length-1;
+    displayNum= displayNum.slice(0,x);
+    myDisplay.innerHTML=displayNum;
+});
